@@ -119,7 +119,7 @@ var {
 
 `DeviceEventEmitter` allows us to listen for events that have been triggered on the native side of things and work with the result on the JavaScript side of things.
 ```js
-var subscription = DeviceEventEmitter.addListener(
+DeviceEventEmitter.addListener(
   'beaconsDidRange',
   (data) => {
     console.log(data);
