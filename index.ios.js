@@ -25,20 +25,36 @@ var region = {
 
 Beacons.startRangingBeaconsInRegion(region);
 
-DeviceEventEmitter.addListener(
-  'beaconsDidRange',
-  (data) => {
-    console.log(data);
-  }
-);
-
 var ReactNativeBeaconExample = React.createClass({
+  getInitialState: function() {
+    return {
+      beacons: []
+    };
+  },
+  componentDidMount: function() {
+    DeviceEventEmitter.addListener(
+      'beaconsDidRange',
+      (data) => {
+        this.setState({
+          beacons: data.beacons.filter(item => item.rssi < 0).map(item => item.rssi)
+        });
+      }
+    );
+  },
   render: function() {
+    var beacons = this.state.beacons.map(function(strength, index) {
+      var beaconPosition = {
+        marginTop: (100 + strength) * 2.5
+      };
+
+      return <View key={index} style={[styles.beacon, beaconPosition]} />
+    }, this);
+
     return (
       <View style={styles.container}>
         <View style={styles.device} />
         <View style={styles.beaconContainer}>
-          <View style={styles.beacon} />
+          {beacons}
         </View>
       </View>
     );
