@@ -155,6 +155,8 @@ Adding more visual appeal
 -------------------------
 While completely functional, from a visual point of view our application is not very appealing at the moment. Let's change that by adding a background and images for the device and the beacons.
 
+The example code is available at https://github.com/geniuxconsulting/blog-react-native-ibeacon.
+
 Best practices when using beacons
 ---------------------------------
 Using beacons proved to be a lot of trial-and-error at first. Here are a few things that helped us when we worked with Beacons:
