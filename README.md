@@ -2,9 +2,13 @@ Using iBeacons with React Native
 ================================
 ![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/beacon_small.jpg)
 
-In case you never heard of beacons or iBeacons before, beacons are little devices that send a signal in a certain interval through Bluetooth LE. iBeacon is the specification that emits specific events and values which we can listen, interpret and react to. On a mobile device we can might interpret this data as sending a notification when you are near a beacon. This can be used for museums as providing additional information for exhibitions, a whole tour guide or even playing audio files when you are in a certain room of a building. Another use case is in retail to show different specific information about products where you are in their vicinity - let's say in a shoe shop you get the information for a specific shoe on your device when you're passing by. In this scenario, we might even get more specific, like have the option to buy the shoe on the spot or be directed to where is available in different sizes and colors.
+(better picture - have philipp confirm it)
 
-React Native is a new way of developing native applications for iOS with JavaScript. It differs from other solutions like Cordova in the regard that Cordova embeds a complete web view wherein our browser environment lies. With React Native on the other hand, we get the default iOS JavaScript engine (JavaScriptCore) but instead of fiddling around with DOM elements, we get access to native elements. We can use React component in a similar fashion than we do in our React web apps. (This means we shouldn't go around and just copy-and-paste React components from the web in our mobile React projects.) The biggest difference is that instead of having `<div />`, `<span />` and `<img />` elements we have `<View />`, `<Text />` and `<Image />` components. How we style our application is also different to what we might be familiar with: Instead of writing CSS, styles are written as JavaScript objects and then inserted as inline styles into our components. React Native uses the Flexbox model for styling components.
+(break the paragraphs in smaller sections to be more readable imo)
+
+In case you never heard of beacons or iBeacons before, beacons are little devices that send a signal in a certain interval through Bluetooth LE. iBeacon is the specification that emits specific events and values which we can listen, interpret and react to. On a mobile device we can might (can or might ?) interpret this data as sending a notification when you are near a beacon. This can be used for museums as providing additional information for exhibitions, a whole tour guide or even playing audio files when you are in a certain room of a building. Another use case is in retail to show different specific information about products where you are in their vicinity - let's say in a shoe shop you get the information for a specific shoe on your device when you're passing by. In this scenario, we might even get more specific, like have the option to buy the shoe on the spot or be directed to where is available in different sizes and colors.
+
+React Native is a new way of developing native applications for iOS with JavaScript. It differs from other solutions like Cordova in the regard that Cordova embeds a complete web view wherein our browser environment lies. With React Native on the other hand, we get the default iOS JavaScript engine (JavaScriptCore) but instead of fiddling around with DOM elements, we get access to native elements. We can use React component in a similar fashion than we do in our React web apps. (This means we shouldn't go around and just copy-and-paste React components from the web in our mobile React projects. (at this point i don't think it is that clear why we should not. maybe rephrase it at the end of the section)) The biggest difference is that instead of having `<div />`, `<span />` and `<img />` elements we have `<View />`, `<Text />` and `<Image />` components. How we style our application is also different to what we might be familiar with: Instead of writing CSS, styles are written as JavaScript objects and then inserted as inline styles into our components. React Native uses the Flexbox model for styling components.
 
 Let's combine these two technologies. We at Geniux Consulting created [`react-native-ibeacon`](https://github.com/geniuxconsulting/react-native-ibeacon) while we were prototyping an app. As the name suggests, it lets us use iBeacons in our React Native apps. Since the `react-native-ibeacon` already contains a small example where it displays all beacons in the area in a simple list, let's create an app that shows the signal of our beacons as distance relative to our device.
 
@@ -83,7 +87,7 @@ Beacons.requestWhenInUseAuthorization();
 
 There are two types of beacon permission. Using beacons when the app is open and currently in use or scanning for beacons while the app is used and while it's in the background. The latter drains more battery power than usual. If we choose background functionality, we need to make sure to actually do something in the background such as displaying notifications when we are near a beacon. Otherwise there is a high chance, Apple will reject the final app. For information on how to enable background mode, take a look at that section in the [`react-native-ibeacon` documentation](https://github.com/geniuxconsulting/react-native-ibeacon#background-mode).
 
-Unfortunately we can't just scan for all beacons, we have to specify which beacons we want to scan for. In its simplest form, we need an identifier and the UUID of one or multiple beacons. Even though it's called UUID, the uniqueness of a beacon is defined through the combination of its UUID, its major and minor version. The same UUID can be used by multiple beacons. When we define multiple regions, we need to make sure that the identifier aren't re-used. The way we define a region is just by having a plain JavaScript object with the properties we need:
+Unfortunately we can't just scan for all beacons, we have to specify which beacons we want to scan for (Are you sure we cannot initiate a scan with uuid = null? just checking, because on Android you can). In its simplest form, we need an identifier and the UUID of one or multiple beacons. Even though it's called UUID, the uniqueness of a beacon is defined through the combination of its UUID, its major and minor version. The same UUID can be used by multiple beacons. When we define multiple regions, we need to make sure that the identifier aren't re-used. The way we define a region is just by having a plain JavaScript object with the properties we need:
 ```js
 var region = {
   identifier: 'Estimotes',
@@ -106,7 +110,7 @@ The next thing we need to is to range for beacons. Ranging is the process of che
 Beacons.startRangingBeaconsInRegion(region);
 ```
 
-Now that we have permission to use iBeacons and `react-native-ibeacon` knows what beacons to search for, let's scan for beacons in the vicinity. As our first step, we need to an object that's called `DeviceEventEmitter`.
+Now that we have permission to use iBeacons and `react-native-ibeacon` knows what beacons to search for, let's scan for beacons in the vicinity. As our first step, we need to (what - you accidentally the whole bottle) an object that's called `DeviceEventEmitter`.
 ```js
 var {
   AppRegistry,
@@ -276,6 +280,8 @@ render: function() {
 
 Since the maximum value of signal strength is `-100` which means the beacon is directly on the device, we want `100 - value`. We are multiplying this with `2.5` to get a better visual representation on the screen and overwriting the `marginTop` value.
 
+(-100 would be a minimum, because rssi values start from around -57 (if i remember correctly) and -57 is the closest rssi value (beacon sitting on device) so a reformulation is necesarry)
+
 
 Adding more visual appeal
 -------------------------
@@ -291,4 +297,4 @@ Best practices when using beacons
 Using beacons proved to be a lot of trial-and-error at first. Here are a few things that helped us when we worked with Beacons:
 - Place the beacons at around head height
 - Since beacons send a signal every second, you might want to filter getting the same or even similar signals received in a short period of time
-- The beacon signal can vary a lot. You may get the proximity `near`, `unknown` the next and `far` after that. Something simple like a moving average algorithm may already do wonders
+- The beacon signal can vary a lot. You may get the proximity `near`, `unknown` the next and `far` after that. Something simple like a moving average algorithm may already do wonders (or not :)) )
