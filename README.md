@@ -143,23 +143,152 @@ Interpreting the data
 Now that we have our beacon signals and we know that we actually get the data we want, let's use this to display our beacons on the screen. At the top of the screen we want to display a representation of our mobile device. A green rectangle will do for now.
 
 ```js
+var ReactNativeBeaconExample = React.createClass({
+  render: function() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.device} />
+      </View>
+    );
+  }
+});
 
+var styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  device: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#6cab36'
+  },
+});
 ```
 
+The next thing is to add a beacon container in where the beacons will be displayed. We'll display beacons as rectangles as well, but instead of being green they should be gray.
 
 ```js
+var ReactNativeBeaconExample = React.createClass({
+  render: function() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.device} />
+        <View style={styles.beaconContainer}>
+          <View style={styles.beacon} />
+        </View>
+      </View>
+    );
+  }
+});
 
+var styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    paddingTop: 20,
+  },
+  device: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#6cab36'
+  },
+  beaconContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  beacon: {
+    width: 50,
+    height: 50,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 200,
+    backgroundColor: '#7c7c81'
+  }
+});
 ```
+
+Our container gets a `flex: 1`, so it can take as much space as it needs and we want to leave some padding between the container and the device rectangle, so that the beacon rectangles won't appear glued to the device rectangle.
+For the beacons to be displayed side-by-side, we need to add `flexDirection: 'row'`. Adding some padding 
+
+![device_and_beacon](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/device_and_beacon.jpg)
+
+With the layout set up, we just need to wire up the beacon scanning logic with the beacon rectangles. The first thing is to move the `beaconsDidRange` event into the component:
+```js
+var ReactNativeBeaconExample = React.createClass({
+  getInitialState: function() {
+    return {
+      beacons: []
+    };
+  },
+  componentDidMount: function() {
+    DeviceEventEmitter.addListener(
+      'beaconsDidRange',
+      (data) => {
+        this.setState({
+          beacons: data.beacons.filter(item => item.rssi < 0).map(item => item.rssi)
+        });
+      }
+    );
+  },
+  render: function() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.device} />
+        <View style={styles.beaconContainer}>
+          <View style={styles.beacon} />
+        </View>
+      </View>
+    );
+  }
+});
+```
+
+What's most important for us in this example is the signal strength which is a number between `0` and `-100`. When the value is 0, it means that there isn't any precise data available. Generally, it's a good idea to disregard beacons that have 0 as their signal strength or `unknown` as its proximity as it's simply too unreliable.
+Ideally we want the signal strength of all our beacons in an array, something like `[-85, -60, -50]`. To be able to use that in our component, we are setting the component's internal state. When we get a `beaconsDidRange` event, we want to update the state with a fresh array of signal strengths. To achieve that we are filtering the initial beacon array and then only taking the signal strength by using the `rssi` property. In this case we are using the arrow syntax to keep the `this` context and to be more concise in our `filter` and `map` methods.
+
+Now we need to update the `render` function to use the component's state in order to draw the amount and position of the beacon rectangles:
+```js
+render: function() {
+  var beacons = this.state.beacons.map(function(strength, index) {
+    var beaconPosition = {
+      marginTop: (100 + strength) * 2.5
+    };
+
+    return <View key={index} style={[styles.beacon, beaconPosition]} />
+  }, this);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.device} />
+      <View style={styles.beaconContainer}>
+        {beacons}
+      </View>
+    </View>
+  );
+}
+```
+
+Since the maximum value of signal strength is `-100` which means the beacon is directly on the device, we want `100 - value`. We are multiplying this with `2.5` to get a better visual representation on the screen and overwriting the `marginTop` value.
+
 
 Adding more visual appeal
 -------------------------
-While completely functional, from a visual point of view our application is not very appealing at the moment. Let's change that by adding a background and images for the device and the beacons.
+While completely functional, from a visual point of view our application is not very appealing at the moment. Let's change that by adding a background and images for the device and beacons.
 
+Running the example
+-------------------
+Beacons
 The example code is available at https://github.com/geniuxconsulting/blog-react-native-ibeacon.
 
 Best practices when using beacons
 ---------------------------------
 Using beacons proved to be a lot of trial-and-error at first. Here are a few things that helped us when we worked with Beacons:
 - Place the beacons at around head height
-- Since beacons send a signal every second, you might want to filter getting the same or similar signals received in a short period of time
+- Since beacons send a signal every second, you might want to filter getting the same or even similar signals received in a short period of time
 - The beacon signal can vary a lot. You may get the proximity `near`, `unknown` the next and `far` after that. Something simple like a moving average algorithm may already do wonders
