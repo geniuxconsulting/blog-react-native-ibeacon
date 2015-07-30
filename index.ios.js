@@ -35,7 +35,12 @@ DeviceEventEmitter.addListener(
 var ReactNativeBeaconExample = React.createClass({
   render: function() {
     return (
-      <View style={styles.container} />
+      <View style={styles.container}>
+        <View style={styles.device} />
+        <View style={styles.beaconContainer}>
+          <View style={styles.beacon} />
+        </View>
+      </View>
     );
   }
 });
@@ -46,7 +51,26 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    paddingTop: 20,
   },
+  device: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#6cab36'
+  },
+  beaconContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  beacon: {
+    width: 50,
+    height: 50,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 200,
+    backgroundColor: '#7c7c81'
+  }
 });
 
 AppRegistry.registerComponent('ReactNativeBeaconExample', () => ReactNativeBeaconExample);
