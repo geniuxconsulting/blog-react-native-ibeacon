@@ -284,7 +284,7 @@ Running the example
 -------------------
 ![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/app.png)
 
-Our small example could definitely improved with more visual appeal, but for the moment its simplicity is enough for our purposes.
+Our small example could definitely improved on the visual side of things, but for the moment its simplicity is enough for our purposes.
 One important thing to remember is that beacons only work on the real device and not in the simulator.
 The example code is available at https://github.com/geniuxconsulting/blog-react-native-ibeacon.
 
@@ -293,4 +293,4 @@ Best practices when using beacons
 Using beacons proved to be a lot of trial-and-error at first. Here are a few things that helped us when we worked with Beacons:
 - Place the beacons at around head height
 - Since beacons send a signal every second, you might want to filter getting the same or even similar signals received in a short period of time
-- The beacon signal can vary a lot. You may get the proximity `near`, `unknown` the next and `far` after that. Something simple like a moving average algorithm may already do wonders
+- The beacon signal can vary a lot. You may get the proximity `near`, `unknown` the next time and `far` after that. Something simple like a moving average algorithm may already do wonders, but might not work for all use cases.
