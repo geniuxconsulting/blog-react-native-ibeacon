@@ -1,6 +1,6 @@
 Using iBeacons with React Native
 ================================
-![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/beacon_small.png)
+![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/beacons_small.png)
 
 In case you never heard of beacons or iBeacons before, beacons are little devices that send a signal in a certain interval through Bluetooth LE. iBeacon is the specification that emits specific events and values which we can listen, interpret and react to. On a mobile device we can might interpret this data as sending a notification when you are near a beacon. This can be used for museums as providing additional information for exhibitions, a whole tour guide or even playing audio files when you are in a certain room of a building. Another use case is in retail to show different specific information about products where you are in their vicinity - let's say in a shoe shop you get the information for a specific shoe on your device when you're passing by. In this scenario, we might even get more specific, like have the option to buy the shoe on the spot or be directed to where is available in different sizes and colors.
 
@@ -279,6 +279,7 @@ When the signal is at `0`, the beacon would be super-close to our device, if it'
 Running the example
 -------------------
 ![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/app.png)
+
 Our small example could definitely improved with more visual appeal, but for the moment its simplicity is enough for our purposes.
 One important thing to remember is that beacons only work on the real device and not in the simulator.
 The example code is available at https://github.com/geniuxconsulting/blog-react-native-ibeacon.
