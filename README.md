@@ -1,6 +1,6 @@
 Using iBeacons with React Native
 ================================
-![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/beacon_small.jpg)
+![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/beacon_small.png)
 
 In case you never heard of beacons or iBeacons before, beacons are little devices that send a signal in a certain interval through Bluetooth LE. iBeacon is the specification that emits specific events and values which we can listen, interpret and react to. On a mobile device we can might interpret this data as sending a notification when you are near a beacon. This can be used for museums as providing additional information for exhibitions, a whole tour guide or even playing audio files when you are in a certain room of a building. Another use case is in retail to show different specific information about products where you are in their vicinity - let's say in a shoe shop you get the information for a specific shoe on your device when you're passing by. In this scenario, we might even get more specific, like have the option to buy the shoe on the spot or be directed to where is available in different sizes and colors.
 
@@ -216,7 +216,7 @@ var styles = StyleSheet.create({
 Our container gets a `flex: 1`, so it can take as much space as it needs and we want to leave some padding between the container and the device rectangle, so that the beacon rectangles won't appear glued to the device rectangle.
 For the beacons to be displayed side-by-side, we need to add `flexDirection: 'row'`. Adding some padding 
 
-![device_and_beacon](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/device_and_beacon.jpg)
+![device_and_beacon](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/device_and_beacon.png)
 
 With the layout set up, we just need to wire up the beacon scanning logic with the beacon rectangles. The first thing is to move the `beaconsDidRange` event into the component:
 ```js
@@ -257,7 +257,7 @@ Now we need to update the `render` function to use the component's state in orde
 render: function() {
   var beacons = this.state.beacons.map(function(strength, index) {
     var beaconPosition = {
-      marginTop: (100 + strength) * 2.5
+      marginTop: Math.pow(strength, 3) / (Math.pow(-100, 3) / 250)
     };
 
     return <View key={index} style={[styles.beacon, beaconPosition]} />
@@ -274,16 +274,13 @@ render: function() {
 }
 ```
 
-Since the maximum value of signal strength is `-100` which means the beacon is directly on the device, we want `100 - value`. We are multiplying this with `2.5` to get a better visual representation on the screen and overwriting the `marginTop` value.
-
-
-Adding more visual appeal
--------------------------
-While completely functional, from a visual point of view our application is not very appealing at the moment. Let's change that by adding a background and images for the device and beacons.
+When the signal is at `0`, the beacon would be super-close to our device, if it's `-100` it would be really far away. In real-life scenarios, we probably get a signal of `-57` or `-60` if a beacon is really close and usually `-85` if a beacon is far away. This depends on the beacon's configuration of its signal frequency and its transmitter power.
 
 Running the example
 -------------------
-Beacons
+![beacons](https://raw.githubusercontent.com/geniuxconsulting/blog-react-native-ibeacon/master/app.png)
+Our small example could definitely improved with more visual appeal, but for the moment its simplicity is enough for our purposes.
+One important thing to remember is that beacons only work on the real device and not in the simulator.
 The example code is available at https://github.com/geniuxconsulting/blog-react-native-ibeacon.
 
 Best practices when using beacons

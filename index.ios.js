@@ -44,7 +44,7 @@ var ReactNativeBeaconExample = React.createClass({
   render: function() {
     var beacons = this.state.beacons.map(function(strength, index) {
       var beaconPosition = {
-        marginTop: (100 + strength) * 2.5
+        marginTop: Math.pow(strength, 3) / (Math.pow(-100, 3) / 250)
       };
 
       return <View key={index} style={[styles.beacon, beaconPosition]} />
